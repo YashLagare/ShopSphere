@@ -1,26 +1,26 @@
+import { clerkMiddleware } from "@clerk/express";
+import cors from "cors";
 import "dotenv/config";
 import express from "express";
-import { connectDB } from "./db";
-import cors from "cors";
 import morgan from "morgan";
-import { ok } from "./utils/envelope";
-import { notFound } from "./middleware/notFound";
+import { connectDB } from "./db";
 import { errorHandler } from "./middleware/errorhandler";
-import { clerkMiddleware } from "@clerk/express";
-import { authRouter } from "./routes/auth/auth.routes";
-import { adminProductRouter } from "./routes/admin/product.routes";
-import { customerProductRouter } from "./routes/customer/product.routes";
-import { customerAddressRouter } from "./routes/customer/address.routes";
-import { adminPromoRouter } from "./routes/admin/promo.routes";
-import { customerPromoRouter } from "./routes/customer/promo.routes";
-import { customerCartWishlistRouter } from "./routes/customer/cart-wishlist.routes";
-import { customerCheckoutRouter } from "./routes/customer/checkout.routes";
-import { customerOrderRouter } from "./routes/customer/orders.routes";
-import { customerCheckoutWithPointsRouter } from "./routes/customer/checkout-with-points.routes";
-import { adminOrderRouter } from "./routes/admin/orders.routes";
-import { adminSettingsRouter } from "./routes/admin/settings.routes";
+import { notFound } from "./middleware/notFound";
 import { adminDashboardRouter } from "./routes/admin/dashboard.routes";
+import { adminOrderRouter } from "./routes/admin/orders.routes";
+import { adminProductRouter } from "./routes/admin/product.routes";
+import { adminPromoRouter } from "./routes/admin/promo.routes";
+import { adminSettingsRouter } from "./routes/admin/settings.routes";
+import { authRouter } from "./routes/auth/auth.routes";
+import { customerAddressRouter } from "./routes/customer/address.routes";
+import { customerCartWishlistRouter } from "./routes/customer/cart-wishlist.routes";
+import { customerCheckoutWithPointsRouter } from "./routes/customer/checkout-with-points.routes";
+import { customerCheckoutRouter } from "./routes/customer/checkout.routes";
 import { customerHomeRouter } from "./routes/customer/home.routes";
+import { customerOrderRouter } from "./routes/customer/orders.routes";
+import { customerProductRouter } from "./routes/customer/product.routes";
+import { customerPromoRouter } from "./routes/customer/promo.routes";
+import { ok } from "./utils/envelope";
 
 async function mainEntryFunction() {
   await connectDB();
@@ -41,7 +41,12 @@ async function mainEntryFunction() {
 
   app.use(express.json());
   app.use(morgan("dev"));
-  app.use(clerkMiddleware());
+  app.use(
+    clerkMiddleware({
+      publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
+      secretKey: process.env.CLERK_SECRET_KEY,
+    }),
+  );
 
   app.get("/health", (_req, res) => {
     res.status(200).json(ok({ message: "Server is healthy/in running state" }));

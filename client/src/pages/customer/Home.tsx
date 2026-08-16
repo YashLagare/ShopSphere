@@ -102,15 +102,16 @@ export function StoreHome() {
     <div className={pageWrapClass}>
       <div className={contentContainerClass}>
         <div className={sectionStackClass}>
-          <section>
-            <div className={bannerGridClass}>
-              <Card className={bannerMainCardClass}>
-                <img
-                  src={mainBanner.imageUrl}
-                  alt="Feature Image"
-                  className={bannerMainImageClass}
-                />
-              </Card>
+          {mainBanner && (
+            <section>
+              <div className={bannerGridClass}>
+                <Card className={bannerMainCardClass}>
+                  <img
+                    src={mainBanner.imageUrl}
+                    alt="Feature Image"
+                    className={bannerMainImageClass}
+                  />
+                </Card>
 
               <div className={bannerSideGridClass}>
                 {sideBanners.map((item) => (
@@ -124,7 +125,8 @@ export function StoreHome() {
                 ))}
               </div>
             </div>
-          </section>
+            </section>
+          )}
 
           {!!data.categories.length ? (
             <section>
