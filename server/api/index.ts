@@ -4,5 +4,10 @@ import { connectDB } from "../src/db";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   await connectDB();
+
+  if (req.url && req.url.startsWith("/api")) {
+    req.url = req.url.replace(/^\/api/, "") || "/";
+  }
+
   return app(req, res);
 }
