@@ -35,7 +35,7 @@ authRouter.post(
 
     const name = fullName || clerkUser.username;
 
-    const raw = process.env.ADMIN_EMAILS || "";
+    const raw = (process.env.ADMIN_EMAILS || "").replace(/['"]/g, "");
     const adminEmails = new Set(
       raw
         .split(",")
@@ -43,20 +43,17 @@ authRouter.post(
         .filter(Boolean),
     );
 
-    // if the current user is existing user or not
-    // update/do nothing
-    // create the user and save in our db with
-    // role
+    const userEmails = (clerkUser.emailAddresses || []).map((e) =>
+      e.emailAddress.trim().toLowerCase(),
+    );
+
+    const shouldBeAdmin = userEmails.some((emailItem) =>
+      adminEmails.has(emailItem),
+    );
 
     const existingUser = await User.findOne({ clerkUserId: userId });
-    const shouldBeAdmin = email ? adminEmails.has(email.toLowerCase()) : false;
 
-    const nextRole =
-      existingUser?.role === "admin"
-        ? "admin"
-        : shouldBeAdmin
-          ? "admin"
-          : existingUser?.role || "user";
+    const nextRole = shouldBeAdmin ? "admin" : existingUser?.role || "user";
 
     const newlyCreatedDbUser = await User.findOneAndUpdate(
       {
@@ -103,6 +100,22 @@ authRouter.get(
 
     if (!dbUser) {
       throw new AppError(404, "User is not found in DB");
+    }
+
+    const raw = (process.env.ADMIN_EMAILS || "").replace(/['"]/g, "");
+    const adminEmails = new Set(
+      raw
+        .split(",")
+        .map((item) => item.trim().toLowerCase())
+        .filter(Boolean),
+    );
+
+    const userEmail = (dbUser.email || "").trim().toLowerCase();
+    const shouldBeAdmin = userEmail ? adminEmails.has(userEmail) : false;
+
+    if (shouldBeAdmin && dbUser.role !== "admin") {
+      dbUser.role = "admin";
+      await dbUser.save();
     }
 
     res.status(200).json(
