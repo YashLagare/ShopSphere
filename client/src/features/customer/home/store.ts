@@ -29,7 +29,12 @@ export const useCustomerHomeStore = create<CustomerHomeStore>((set) => ({
         data: response ?? fallbackData,
         loading: false,
       });
-    } catch {}
+    } catch {
+      set({
+        data: fallbackData,
+        loading: false,
+      });
+    }
   },
   clear: () => {
     set({ data: fallbackData, loading: true });
