@@ -1,6 +1,8 @@
 import { useAuthStore } from "@/features/auth/store";
 import type { UserRole } from "@/lib/types";
+import { useEffect } from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import { toast } from "sonner";
 import { Commonloader } from "../common/Loader";
 
 type RoleGuardLayoutProps = {
@@ -10,6 +12,14 @@ type RoleGuardLayoutProps = {
 export function RoleGuardLayout({ allow }: RoleGuardLayoutProps) {
   const { isBootstrapped, status, user } = useAuthStore();
 
+  const isAllowed = Boolean(user && allow.includes(user.role));
+
+  useEffect(() => {
+    if (isBootstrapped && status !== "loading" && user && !isAllowed) {
+      toast.error("You don't have permission to access the admin panel.");
+    }
+  }, [isBootstrapped, status, user, isAllowed]);
+
   if (!isBootstrapped || status === "loading") {
     return <Commonloader />;
   }
@@ -18,7 +28,7 @@ export function RoleGuardLayout({ allow }: RoleGuardLayoutProps) {
     return <Navigate to="/sign-in" replace />;
   }
 
-  if (!allow.includes(user.role)) {
+  if (!isAllowed) {
     return <Navigate to="/" replace />;
   }
 

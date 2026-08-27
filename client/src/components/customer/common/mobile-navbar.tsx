@@ -12,6 +12,7 @@ import {
   LogIn,
   LogOut,
   Menu,
+  Shield,
   ShoppingBag,
   ShoppingCart,
   Store,
@@ -22,6 +23,7 @@ import { Link } from "react-router-dom";
 
 type CustomerMobileNavbarProps = {
   isSignedIn: boolean;
+  isAdmin?: boolean;
 };
 
 export type NavItem = {
@@ -34,6 +36,12 @@ const collectionsPage: NavItem = {
   label: "Collections",
   href: "/collections",
   icon: ShoppingBag,
+};
+
+const adminPage: NavItem = {
+  label: "Admin Panel",
+  href: "/admin",
+  icon: Shield,
 };
 
 const iconLink =
@@ -88,6 +96,7 @@ function DrawerSection({ title, items }: { title: string; items: NavItem[] }) {
 
 export function CustomerMobileNavbar({
   isSignedIn,
+  isAdmin,
 }: CustomerMobileNavbarProps) {
   const mobileAccountItems: NavItem[] = isSignedIn
     ? [
@@ -128,6 +137,13 @@ export function CustomerMobileNavbar({
           </div>
           <Separator />
           <DrawerSection title="Collections" items={[collectionsPage]} />
+
+          {isAdmin ? (
+            <>
+              <Separator />
+              <DrawerSection title="Administration" items={[adminPage]} />
+            </>
+          ) : null}
 
           <Separator />
           <DrawerSection title="Account" items={mobileAccountItems} />

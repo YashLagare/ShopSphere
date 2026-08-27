@@ -1,4 +1,5 @@
 import {
+  ArrowLeft,
   BadgePercent,
   BarChart3,
   LayoutDashboard,
@@ -7,7 +8,7 @@ import {
   Store,
   type LucideIcon,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 type AdminNavItem = {
   label: string;
@@ -33,7 +34,6 @@ const navItemBase =
   "flex h-11 items-center gap-3 px-4 text-[15px] font-medium transition-colors";
 
 const navItemDesktop = `${navItemBase} rounded-none`;
-const navItemMobile = navItemBase;
 
 const activeItem = "bg-sidebar-primary text-sidebar-primary-foreground";
 const idleItem =
@@ -76,8 +76,18 @@ export function AdminSidebar() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto py-4">
         <SidebarNav />
+      </div>
+
+      <div className="border-t border-sidebar-border p-4">
+        <Link
+          to="/"
+          className="flex h-11 items-center gap-3 rounded-xl px-4 text-[15px] font-medium text-sidebar-foreground transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+        >
+          <ArrowLeft className="h-[18px] w-[18px] text-amber-500" />
+          <span>View Store</span>
+        </Link>
       </div>
     </aside>
   );

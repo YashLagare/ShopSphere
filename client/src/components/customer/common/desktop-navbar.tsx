@@ -3,6 +3,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@clerk/react";
@@ -10,6 +11,7 @@ import {
   Heart,
   LogIn,
   LogOut,
+  Shield,
   ShoppingBag,
   ShoppingBasket,
   ShoppingCart,
@@ -99,7 +101,8 @@ function NavTextLink({
 
 export function CustomerNavbar() {
   const { isSignedIn, signOut, isLoaded } = useAuth();
-  const { isBootstrapped } = useAuthStore();
+  const { isBootstrapped, user } = useAuthStore();
+  const isAdmin = isBootstrapped && user?.role === "admin";
 
   const {
     items: wishlistItems,
@@ -199,6 +202,22 @@ export function CustomerNavbar() {
                   <span>My Orders</span>
                 </DropdownMenuItem>
 
+                {isAdmin ? (
+                  <>
+                    <DropdownMenuSeparator className="my-1.5" />
+                    <DropdownMenuItem asChild className={dropdownItemLink}>
+                      <Link to="/admin" className="flex items-center gap-3 w-full">
+                        <Shield className="h-4 w-4 text-amber-500" />
+                        <span className="font-semibold text-amber-500">
+                          Admin Dashboard
+                        </span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                ) : null}
+
+                <DropdownMenuSeparator className="my-1.5" />
+
                 <DropdownMenuItem
                   onClick={() => signOut()}
                   className={dropdownItemLink}
@@ -218,7 +237,7 @@ export function CustomerNavbar() {
           </div>
         </nav>
 
-        <CustomerMobileNavbar isSignedIn={!!isSignedIn} />
+        <CustomerMobileNavbar isSignedIn={!!isSignedIn} isAdmin={isAdmin} />
 
         {showSignInUi ? <CustomerWishlistDialog /> : null}
         {showSignInUi ? <CustomerProfileDialog /> : null}

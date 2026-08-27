@@ -32,6 +32,7 @@
     "@types/multer": "^2.1.0",
     "@types/node": "^25.5.0",
     "@types/streamifier": "^0.1.2",
+    "@vercel/node": "^5.1.8",
     "nodemon": "^3.1.14",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
